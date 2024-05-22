@@ -17,7 +17,7 @@ class CreateCoursesTable extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->string('instructor');
+            $table->foreignId('instructor_id')->constrained('users')->onDelete('cascade');
             $table->integer('duration'); // Durée en heures
             $table->string('level');
             $table->string('language');

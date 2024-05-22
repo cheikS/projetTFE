@@ -17,8 +17,10 @@ defineProps({
 const user = usePage().props.auth.user;
 
 const form = useForm({
-    name: user.name,
-    email: user.email,
+    login: user.login || '',
+    firstname: user.firstname || '',
+    lastname: user.lastname || '',
+    email: user.email || '',
 });
 </script>
 
@@ -26,7 +28,6 @@ const form = useForm({
     <section>
         <header>
             <h2 class="text-lg font-medium text-gray-900">Profile Information</h2>
-
             <p class="mt-1 text-sm text-gray-600">
                 Update your account's profile information and email address.
             </p>
@@ -34,36 +35,54 @@ const form = useForm({
 
         <form @submit.prevent="form.patch(route('profile.update'))" class="mt-6 space-y-6">
             <div>
-                <InputLabel for="name" value="Name" />
-
+                <InputLabel for="login" value="Login" />
                 <TextInput
-                    id="name"
+                    id="login"
                     type="text"
                     class="mt-1 block w-full"
-                    v-model="form.name"
+                    v-model="form.login"
                     required
                     autofocus
-                    autocomplete="name"
+                    autocomplete="username"
                 />
-
-                <InputError class="mt-2" :message="form.errors.name" />
+                <InputError class="mt-2" :message="form.errors.login" />
             </div>
-
+            <div>
+                <InputLabel for="firstname" value="Firstname" />
+                <TextInput
+                    id="firstname"
+                    type="text"
+                    class="mt-1 block w-full"
+                    v-model="form.firstname"
+                    required
+                    autocomplete="given-name"
+                />
+                <InputError class="mt-2" :message="form.errors.firstname" />
+            </div>
+            <div>
+                <InputLabel for="lastname" value="Lastname" />
+                <TextInput
+                    id="lastname"
+                    type="text"
+                    class="mt-1 block w-full"
+                    v-model="form.lastname"
+                    required
+                    autocomplete="family-name"
+                />
+                <InputError class="mt-2" :message="form.errors.lastname" />
+            </div>
             <div>
                 <InputLabel for="email" value="Email" />
-
                 <TextInput
                     id="email"
                     type="email"
                     class="mt-1 block w-full"
                     v-model="form.email"
                     required
-                    autocomplete="username"
+                    autocomplete="email"
                 />
-
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
-
             <div v-if="mustVerifyEmail && user.email_verified_at === null">
                 <p class="text-sm mt-2 text-gray-800">
                     Your email address is unverified.
@@ -76,18 +95,12 @@ const form = useForm({
                         Click here to re-send the verification email.
                     </Link>
                 </p>
-
-                <div
-                    v-show="status === 'verification-link-sent'"
-                    class="mt-2 font-medium text-sm text-green-600"
-                >
+                <div v-show="status === 'verification-link-sent'" class="mt-2 font-medium text-sm text-green-600">
                     A new verification link has been sent to your email address.
                 </div>
             </div>
-
             <div class="flex items-center gap-4">
                 <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
-
                 <Transition
                     enter-active-class="transition ease-in-out"
                     enter-from-class="opacity-0"
