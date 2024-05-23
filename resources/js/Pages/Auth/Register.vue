@@ -7,7 +7,9 @@ import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
 const form = useForm({
-    name: '',
+    firstname: '',
+    lastname: '',
+    login: '',
     email: '',
     password: '',
     password_confirmation: '',
@@ -19,31 +21,53 @@ const submit = () => {
     });
 };
 </script>
-
 <template>
     <GuestLayout>
         <Head title="Register" />
 
         <form @submit.prevent="submit">
             <div>
-                <InputLabel for="name" value="Name" />
-
+                <InputLabel for="firstname" value="First Name" />
                 <TextInput
-                    id="name"
+                    id="firstname"
                     type="text"
                     class="mt-1 block w-full"
-                    v-model="form.name"
+                    v-model="form.firstname"
                     required
                     autofocus
-                    autocomplete="name"
+                    autocomplete="given-name"
                 />
+                <InputError class="mt-2" :message="form.errors.firstname" />
+            </div>
 
-                <InputError class="mt-2" :message="form.errors.name" />
+            <div class="mt-4">
+                <InputLabel for="lastname" value="Last Name" />
+                <TextInput
+                    id="lastname"
+                    type="text"
+                    class="mt-1 block w-full"
+                    v-model="form.lastname"
+                    required
+                    autocomplete="family-name"
+                />
+                <InputError class="mt-2" :message="form.errors.lastname" />
+            </div>
+
+            <div class="mt-4">
+                <InputLabel for="login" value="Login" />
+                <TextInput
+                    id="login"
+                    type="text"
+                    class="mt-1 block w-full"
+                    v-model="form.login"
+                    required
+                    autocomplete="username"
+                />
+                <InputError class="mt-2" :message="form.errors.login" />
             </div>
 
             <div class="mt-4">
                 <InputLabel for="email" value="Email" />
-
                 <TextInput
                     id="email"
                     type="email"
@@ -52,13 +76,11 @@ const submit = () => {
                     required
                     autocomplete="username"
                 />
-
                 <InputError class="mt-2" :message="form.errors.email" />
             </div>
 
             <div class="mt-4">
                 <InputLabel for="password" value="Password" />
-
                 <TextInput
                     id="password"
                     type="password"
@@ -67,13 +89,11 @@ const submit = () => {
                     required
                     autocomplete="new-password"
                 />
-
                 <InputError class="mt-2" :message="form.errors.password" />
             </div>
 
             <div class="mt-4">
                 <InputLabel for="password_confirmation" value="Confirm Password" />
-
                 <TextInput
                     id="password_confirmation"
                     type="password"
@@ -82,7 +102,6 @@ const submit = () => {
                     required
                     autocomplete="new-password"
                 />
-
                 <InputError class="mt-2" :message="form.errors.password_confirmation" />
             </div>
 
@@ -93,7 +112,6 @@ const submit = () => {
                 >
                     Already registered?
                 </Link>
-
                 <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Register
                 </PrimaryButton>

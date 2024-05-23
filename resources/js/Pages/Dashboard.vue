@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 </script>
 
 <template>
@@ -16,7 +16,25 @@ import { Head } from '@inertiajs/vue3';
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 text-gray-900">You're logged in!</div>
                 </div>
+                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mt-4">
+                    <div class="p-6">
+                        <nav>
+                            <ul>
+                                <li>
+                                    <Link href="{{ route('courses.index') }}" class="text-blue-500 hover:underline">
+                                        View Courses
+                                    </Link>
+                                </li>
+                                <!-- Add more links as needed -->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
             </div>
         </div>
     </AuthenticatedLayout>
 </template>
+
+<style scoped>
+/* Add any custom styles here */
+</style>
