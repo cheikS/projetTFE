@@ -21,11 +21,8 @@ import { Head, Link } from '@inertiajs/vue3';
                         <nav>
                             <ul>
                                 <li>
-                                    <Link href="{{ route('courses.index') }}" class="text-blue-500 hover:underline">
-                                        View Courses
-                                    </Link>
+                                    <Link :href="route('courses.index')"  class="text-blue-500 hover:underline">View Courses</Link>
                                 </li>
-                                <!-- Add more links as needed -->
                             </ul>
                         </nav>
                     </div>
@@ -36,5 +33,4 @@ import { Head, Link } from '@inertiajs/vue3';
 </template>
 
 <style scoped>
-/* Add any custom styles here */
 </style>

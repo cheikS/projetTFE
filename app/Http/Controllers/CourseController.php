@@ -13,7 +13,7 @@ class CourseController extends Controller
      */
     public function index(): Response
     {
-        $courses = Course::all();
+        $courses = Course::get()->toArray();
         return Inertia::render('Courses/Index', [
             'courses' => $courses,
         ]);
