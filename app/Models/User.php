@@ -28,6 +28,12 @@ class User extends Authenticatable
         'password',
     ];
 
+    public function courses()
+    {
+        return $this->belongsToMany(Course::class);
+    }
+    
+
     public $timestamps = false;
 
     protected $casts = [

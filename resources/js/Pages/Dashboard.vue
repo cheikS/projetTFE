@@ -21,7 +21,7 @@ import { Head, Link } from '@inertiajs/vue3';
                         <nav>
                             <ul>
                                 <li>
-                                    <Link :href="route('courses.index')"  class="text-blue-500 hover:underline">View Courses</Link>
+                                    <Link :href="route('courses.index')"  class="text-blue-500 hover:underline">View All Courses</Link>
                                 </li>
                             </ul>
                         </nav>
