@@ -6,6 +6,7 @@ import { enUS } from 'date-fns/locale';
 
 const { props } = usePage();
 const course = props.course;
+const isRegistered = props.isRegistered;
 
 const formatDate = (dateString) => {
     return format(new Date(dateString), 'PPpp', { locale: enUS });
@@ -36,9 +37,10 @@ const register = () => {
             <Link :href="route('courses.index')" class="text-blue-500 hover:underline mt-4">Back to Courses</Link>
         </div>
         <div class="mt-6">
-            <PrimaryButton @click="register" :class="{ 'opacity-25': form.processing }" :disabled="form.processing" class="register-button">
+            <PrimaryButton v-if="!isRegistered" @click="register" :class="{ 'opacity-25': form.processing }" :disabled="form.processing" class="register-button">
                 Register for this course
             </PrimaryButton>
+            <span v-else class="text-gray-500">You are already registered for this course</span>
         </div>
     </AuthenticatedLayout>
 </template>
@@ -46,4 +48,5 @@ const register = () => {
 <style scoped>
 .register-button {
     cursor: pointer; /* Définit le curseur sur une main */
-}</style>
+}
+</style>

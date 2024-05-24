@@ -32,6 +32,11 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Course::class);
     }
+
+    public function registrations()
+    {
+        return $this->hasMany(Registration::class);
+    }
     
 
     public $timestamps = false;

@@ -29,12 +29,17 @@ class CourseController extends Controller
      * Display the specified course.
      */
     public function show($id): Response
-    {
-        $course = Course::with('instructor')->findOrFail($id);
-        return Inertia::render('Courses/Show', [
-            'course' => $course,
-        ]);
-    }
+{
+    $user = Auth::user();
+    $course = Course::with('instructor')->findOrFail($id);
+    $isRegistered = $user ? $user->registrations()->where('course_id', $id)->exists() : false;
+
+    return Inertia::render('Courses/Show', [
+        'course' => $course,
+        'isRegistered' => $isRegistered,
+    ]);
+}
+
 
     public function register(Request $request, Course $course)
     {
@@ -57,12 +62,36 @@ class CourseController extends Controller
 
         return Redirect::route('courses.index');
     }
-    public function dashboard()
-    {
-        $user = auth()->user();
-        $courses = $user->courses()->get(); // Récupérer tous les cours de l'utilisateur
+    
+    public function registeredCourses()
+{
+    $user = auth()->user();
+    $registrations = $user->registrations()->with('course.instructor')->get();
 
-        return view('dashboard', compact('courses'));
-    }
+    $courses = $registrations->map(function($registration) {
+        return $registration->course;
+    });
+
+    return inertia('RegisteredCourses', [
+        'courses' => $courses
+    ]);
+}
+
+
+public function dashboard()
+{
+    $user = auth()->user();
+    $registrations = $user->registrations()->with('course')->get();
+
+    $courses = $registrations->map(function($registration) {
+        return $registration->course;
+    });
+
+    return Inertia::render('Dashboard', [
+        'courses' => $courses
+    ]);
+}
+
+
 
 }
