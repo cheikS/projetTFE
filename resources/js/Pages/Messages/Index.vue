@@ -1,4 +1,34 @@
-<!-- resources/js/Pages/Messages/Index.vue -->
+<script setup>
+import { ref } from 'vue';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { useForm } from '@inertiajs/vue3';
+import { usePage, Link } from '@inertiajs/vue3';
+
+import { defineProps } from 'vue';
+
+const { props } = usePage();
+
+const messages = props.messages;
+
+// Utilisation de useForm pour gérer le formulaire
+const form = useForm({
+    login: '',
+    subject: '',
+    content: ''
+});
+
+const successMessage = ref('');
+
+const submit = () => {
+    form.post('/messages', {
+        onSuccess: () => {
+            successMessage.value = 'Le message a été envoyé avec succès.';
+            form.reset();
+        }
+    });
+};
+</script>
+
 <template>
     <AuthenticatedLayout>
         <template #header>
@@ -9,9 +39,10 @@
             <!-- Liste des messages reçus -->
             <ul class="mb-6">
                 <li v-for="message in messages" :key="message.id" class="mb-4">
-                    <p><strong>De:</strong> {{ message.sender.firstname }} {{ message.sender.lastname }}</p>
+                    <Link :href="route('messages.index')">
+                    <p v-if="message.sender"><strong>De:</strong> {{ message.sender.firstname }} {{ message.sender.lastname }}</p>
                     <p><strong>Objet:</strong> {{ message.subject }}</p>
-                    <p>{{ message.content }}</p>
+                </Link>
                 </li>
             </ul>
 
@@ -20,7 +51,7 @@
                 <strong class="font-bold">Succès!</strong>
                 <span class="block sm:inline">{{ successMessage }}</span>
                 <span class="absolute top-0 bottom-0 right-0 px-4 py-3" @click="successMessage = ''">
-                    <svg class="fill-current h-6 w-6 text-green-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 5.652a1 1 0 010 1.414L11.414 10l2.934 2.934a1 1 0 01-1.414 1.414L10 11.414l-2.934 2.934a1 1 0 01-1.414-1.414L8.586 10 5.652 7.066a1 1 0 011.414-1.414L10 8.586l2.934-2.934a1 1 0 011.414 0z"/></svg>
+                    <svg class="fill-current h-6 w-6 text-green-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 5.652a1 1 0 010 1.414L11.414 10l2.934 2.934a1 1 0 01-1.414 1.414L10 11.414l-2.934-2.934a1 1 0 01-1.414-1.414L8.586 10 5.652 7.066a1 1 0 011.414-1.414L10 8.586l2.934-2.934a1 1 0 011.414 0z"/></svg>
                 </span>
             </div>
 
@@ -41,10 +72,7 @@
                         <textarea v-model="form.content" id="content" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"></textarea>
                     </div>
                     <div class="flex justify-end">
-                        <button type="submit">
-                    Envoyer
-                </button>
-
+                        <button type="submit">Envoyer</button>
                     </div>
                 </form>
             </div>
@@ -52,31 +80,3 @@
     </AuthenticatedLayout>
 </template>
 
-<script setup>
-import { ref } from 'vue';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { defineProps } from 'vue';
-import { useForm } from '@inertiajs/vue3';
-
-const props = defineProps({
-    messages: Array
-});
-
-// Utilisation de useForm pour gérer le formulaire
-const form = useForm({
-    login: '',
-    subject: '',
-    content: ''
-});
-
-const successMessage = ref('');
-
-const submit = () => {
-    form.post('/messages', {
-        onSuccess: () => {
-            successMessage.value = 'Le message a été envoyé avec succès.';
-            form.reset();
-        }
-    });
-};
-</script>

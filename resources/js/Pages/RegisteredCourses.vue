@@ -9,7 +9,7 @@ const courses = props.courses;
     <div>
         <Head title="Registered Courses" />
 
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Registered Courses</h2>
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">My Courses</h2>
 
         <ul>
             <li v-for="course in courses" :key="course.id" class="mb-4 p-4 border rounded">

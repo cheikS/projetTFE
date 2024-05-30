@@ -8,7 +8,7 @@ const courses = props.courses;
 <template>
     <AuthenticatedLayout>
         <h1 class="text-2xl font-bold mb-6">Courses</h1>
-        <div style="margin-left: 20px;"> <!-- Ajout de la marge directement ici -->
+        <div > <!-- Ajout de la marge directement ici -->
             <ul>
                 <li v-for="course in courses" :key="course.id" class="mb-4 p-4 border rounded cursor-pointer">
                     <Link :href="route('courses.show', course.id)">

@@ -5,19 +5,23 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Message;
 use App\Models\User;
+use Inertia\Inertia;
+
 use Illuminate\Support\Facades\Auth;
 
 class MessageController extends Controller
 {
+
     public function index()
     {
-        $user = Auth::user();
-        $messages = Message::where('receiver_id', $user->id)->get();
-        
-        return inertia('Messages/Index', [
+        $receiver_id = Auth::id();
+        $messages = Message::where('receiver_id', $receiver_id)->with('sender')->get();
+
+        return Inertia::render('Messages/Index', [
             'messages' => $messages,
         ]);
     }
+
 
     public function store(Request $request)
     {
@@ -38,4 +42,7 @@ class MessageController extends Controller
 
         return redirect()->route('messages.index')->with('success', 'Message envoyé avec succès.');
     }
+
+  
+
 }
