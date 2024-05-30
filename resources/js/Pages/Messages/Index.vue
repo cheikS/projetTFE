@@ -24,10 +24,13 @@ const submit = () => {
         onSuccess: () => {
             successMessage.value = 'Le message a été envoyé avec succès.';
             form.reset();
+            // Rafraîchir la page après l'envoi du message
+            location.reload();
         }
     });
 };
 </script>
+
 
 <template>
     <AuthenticatedLayout>
