@@ -43,6 +43,16 @@ class MessageController extends Controller
         return redirect()->route('messages.index')->with('success', 'Message envoyé avec succès.');
     }
 
+    // MessageController.php
+    public function show($id)
+    {
+        $message = Message::with('sender')->findOrFail($id);
+        return inertia('MessageDetails', ['message' => $message]);
+    }
+
+    
+
+
   
 
 }
