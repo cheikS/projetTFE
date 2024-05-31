@@ -43,7 +43,6 @@ class MessageController extends Controller
         return redirect()->route('messages.index')->with('success', 'Message envoyé avec succès.');
     }
 
-    // MessageController.php
     public function show($id)
     {
         $message = Message::with('sender')->findOrFail($id);
@@ -51,7 +50,23 @@ class MessageController extends Controller
     }
 
     
+    public function reply(Request $request)
+    {
+        $request->validate([
+            'subject' => 'required|string|max:255',
+            'content' => 'required|string',
+            'receiver_id' => 'required|exists:users,id'
+        ]);
 
+        Message::create([
+            'sender_id' => Auth::id(),
+            'receiver_id' => $request->receiver_id,
+            'subject' => $request->subject,
+            'content' => $request->content
+        ]);
+
+        return redirect()->back()->with('success', 'Réponse envoyée avec succès.');
+    }
 
   
 

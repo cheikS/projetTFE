@@ -22,6 +22,7 @@ Route::get('/dashboard', function () {
 
 
 Route::middleware('auth')->group(function () {
+    Route::post('/messages/reply', [MessageController::class, 'reply'])->name('messages.reply');
     Route::get('/messages/{id}', [MessageController::class, 'show'])->name('messages.show');
     Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
     Route::get('/messages', [MessageController::class, 'index'])->name('messages.index');

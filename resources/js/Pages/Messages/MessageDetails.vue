@@ -60,12 +60,13 @@ const showReplyForm = () => {
 const replyForm = useForm({
     subject: `Re: ${message.value.subject}`,
     content: '',
+    receiver_id: message.value.sender.id,
 });
 
 const successMessage = ref('');
 
 const submitReply = () => {
-    replyForm.post('/messages', {
+    replyForm.post('/messages/reply', {
         onSuccess: () => {
             isReplyFormVisible.value = false;
             replyForm.reset();
@@ -78,3 +79,4 @@ const submitReply = () => {
     });
 };
 </script>
+    
