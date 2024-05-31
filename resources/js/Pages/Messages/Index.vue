@@ -83,12 +83,14 @@ watch([startIndex, messages], () => {
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
             <!-- List of received messages -->
             <ul class="mb-6" v-if="messages.length > 0">
-                <li v-for="message in messages" :key="message.id" class="mb-4 cursor-pointer" @click="() => router.visit(route('messages.show', message.id))">
-                    <div>
-                        <p v-if="message.sender"><strong>From:</strong> {{ message.sender.firstname }} {{ message.sender.lastname }}</p>
-                        <p><strong>Subject:</strong> {{ message.subject }}</p>
-                        <p><strong>Received on:</strong> {{ new Date(message.created_at).toLocaleString() }}</p>
-                    </div>
+                <li v-for="message in messages" :key="message.id" class="mb-4 cursor-pointer">
+                    <Link :href="route('messages.show', message.id)">
+                        <div>
+                            <p v-if="message.sender"><strong>From:</strong> {{ message.sender.firstname }} {{ message.sender.lastname }}</p>
+                            <p><strong>Subject:</strong> {{ message.subject }}</p>
+                            <p><strong>Received on:</strong> {{ new Date(message.created_at).toLocaleString() }}</p>
+                        </div>
+                    </Link>
                 </li>
             </ul>
 

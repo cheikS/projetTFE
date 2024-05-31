@@ -1,4 +1,3 @@
-<!-- MessageDetails.vue -->
 <template>
     <AuthenticatedLayout>
         <template #header>

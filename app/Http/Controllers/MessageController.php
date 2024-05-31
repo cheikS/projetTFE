@@ -47,7 +47,7 @@ class MessageController extends Controller
     public function show($id)
     {
         $message = Message::with('sender')->findOrFail($id);
-        return inertia('MessageDetails', ['message' => $message]);
+        return inertia('Messages/MessageDetails', ['message' => $message]);
     }
 
     
