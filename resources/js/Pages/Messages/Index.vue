@@ -1,14 +1,13 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { useForm } from '@inertiajs/vue3';
 import { usePage, Link } from '@inertiajs/vue3';
 
-import { defineProps } from 'vue';
-
 const { props } = usePage();
 
-const messages = props.messages;
+// Récupérer et inverser tous les messages
+const allMessages = props.messages.reverse();
 
 // Utilisation de useForm pour gérer le formulaire
 const form = useForm({
@@ -24,13 +23,47 @@ const submit = () => {
         onSuccess: () => {
             successMessage.value = 'Le message a été envoyé avec succès.';
             form.reset();
-            // Rafraîchir la page après l'envoi du message
             location.reload();
         }
     });
 };
-</script>
 
+// Nombre de messages à afficher par page
+const messagesToShow = 3;
+
+// Index du premier message à afficher
+const startIndex = ref(0);
+
+// Messages à afficher
+const messages = ref(allMessages.slice(startIndex.value, startIndex.value + messagesToShow));
+
+// Fonction pour afficher les messages précédents
+const previousMessages = () => {
+    startIndex.value = Math.max(startIndex.value - messagesToShow, 0);
+    messages.value = allMessages.slice(startIndex.value, startIndex.value + messagesToShow);
+};
+
+// Fonction pour afficher les messages suivants
+const nextMessages = () => {
+    if (startIndex.value + messagesToShow < allMessages.length) {
+        startIndex.value = Math.min(startIndex.value + messagesToShow, allMessages.length);
+        messages.value = allMessages.slice(startIndex.value, Math.min(startIndex.value + messagesToShow, allMessages.length));
+    }
+};
+
+// Vérifier si on a plus de 3 messages
+const hasMoreThanThreeMessages = ref(allMessages.length > messagesToShow);
+
+// Mettre à jour les conditions de visibilité des flèches
+const canShowNext = ref(startIndex.value + messagesToShow < allMessages.length);
+const canShowPrevious = ref(startIndex.value > 0);
+
+// Surveiller les modifications de l'index de démarrage et mettre à jour les flèches
+watch([startIndex, messages], () => {
+    canShowNext.value = startIndex.value + messagesToShow < allMessages.length;
+    canShowPrevious.value = startIndex.value > 0;
+});
+</script>
 
 <template>
     <AuthenticatedLayout>
@@ -43,11 +76,25 @@ const submit = () => {
             <ul class="mb-6">
                 <li v-for="message in messages" :key="message.id" class="mb-4">
                     <Link :href="route('messages.index')">
-                    <p v-if="message.sender"><strong>De:</strong> {{ message.sender.firstname }} {{ message.sender.lastname }}</p>
-                    <p><strong>Objet:</strong> {{ message.subject }}</p>
-                </Link>
+                        <p v-if="message.sender"><strong>De:</strong> {{ message.sender.firstname }} {{ message.sender.lastname }}</p>
+                        <p><strong>Objet:</strong> {{ message.subject }}</p>
+                    </Link>
                 </li>
             </ul>
+
+            <!-- Flèches de navigation -->
+            <div v-if="hasMoreThanThreeMessages" class="flex justify-between items-center mb-6">
+                <button @click="previousMessages" :disabled="!canShowPrevious" class="p-2" v-if="canShowPrevious">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <button @click="nextMessages" :disabled="!canShowNext" class="p-2" v-if="canShowNext">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+            </div>
 
             <!-- Notification de succès -->
             <div v-if="successMessage" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-6" role="alert">
@@ -82,4 +129,3 @@ const submit = () => {
         </div>
     </AuthenticatedLayout>
 </template>
-
