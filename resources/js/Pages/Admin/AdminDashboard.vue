@@ -15,7 +15,7 @@
 
                 <div class="mt-4">
                     <h3 class="text-lg font-medium mb-4">Delete a Course</h3>
-                    <form :action="`/courses/${selectedCourseId.value}`" method="POST">
+                    <form :action="`/admin/courses/${selectedCourseId}`" method="POST">
                         <input type="hidden" name="_method" value="DELETE">
                         <input type="hidden" name="_token" :value="csrfToken">
                         <div>
@@ -47,7 +47,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watchEffect } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
@@ -62,6 +62,15 @@ onMounted(() => {
     const csrfMetaTag = document.querySelector('meta[name="csrf-token"]');
     if (csrfMetaTag) {
         csrfToken.value = csrfMetaTag.getAttribute('content');
+    }
+});
+
+// Watch for successMessage changes and clear it after 3 seconds
+watchEffect(() => {
+    if (successMessage.value) {
+        setTimeout(() => {
+            successMessage.value = '';
+        }, 3000);
     }
 });
 </script>
