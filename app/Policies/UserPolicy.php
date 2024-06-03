@@ -1,6 +1,5 @@
 <?php
-
-// app/Providers/AuthServiceProvider.php
+/// app/Providers/AuthServiceProvider.php
 
 namespace App\Providers;
 
@@ -11,6 +10,7 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 class AuthServiceProvider extends ServiceProvider
 {
     
+
     /**
      * Register any authentication / authorization services.
      *

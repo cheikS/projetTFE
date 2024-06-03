@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\MessageController;
+use App\Http\Controllers\UserController;
+
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -22,6 +24,7 @@ Route::get('/dashboard', function () {
 
 
 Route::middleware('auth')->group(function () {
+    Route::get('/admin/dashboard', [UserController::class, 'adminDashboard'])->name('admin.dashboard');
     Route::post('/messages/reply', [MessageController::class, 'reply'])->name('messages.reply');
     Route::get('/messages/{id}', [MessageController::class, 'show'])->name('messages.show');
     Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
@@ -35,5 +38,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/courses/{course}/register', [CourseController::class, 'register'])->name('courses.register');
     Route::get('/registered-courses', [CourseController::class, 'registeredCourses'])->name('registered.courses');
 });
+
+
+
+
+
 
 require __DIR__.'/auth.php';
