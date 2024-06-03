@@ -2,16 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 
+use App\Models\Course;
+use Inertia\Inertia;
 class UserController extends Controller
 {
     // Autres méthodes existantes...
 
     public function adminDashboard()
     {
-        return inertia('Admin/AdminDashboard');
+        $courses = Course::all();
+        return Inertia::render('Admin/AdminDashboard', [
+            'courses' => $courses,
+            'successMessage' => session('success'),
+        ]);
     }
+    
+
 
     public function instructorDashboard()
     {

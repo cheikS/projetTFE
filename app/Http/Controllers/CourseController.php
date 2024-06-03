@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\Request;
@@ -91,7 +92,40 @@ public function dashboard()
         'courses' => $courses
     ]);
 }
+public function create()
+{
+    $instructors = User::whereRole('instructor')->get();
+    return Inertia::render('Courses/Create', [
+        'instructors' => $instructors
+    ]);
+}
 
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+        'instructor_id' => 'required|exists:users,id',
+        'duration' => 'required|integer',
+        'level' => 'required|string',
+        'language' => 'required|string',
+        'price' => 'required|numeric',
+        'category' => 'required|string',
+    ]);
+
+    Course::create($validated);
+
+    return Redirect::route('courses.index')->with('success', 'Course created successfully.');
+}
+
+
+public function destroy($id)
+{
+    $course = Course::findOrFail($id);
+    $course->delete();
+
+    return redirect()->route('admin.dashboard')->with('success', 'Course deleted successfully');
+}
 
 
 }
