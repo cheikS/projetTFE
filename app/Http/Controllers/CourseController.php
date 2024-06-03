@@ -115,8 +115,9 @@ public function store(Request $request)
 
     Course::create($validated);
 
-    return Redirect::route('courses.index')->with('success', 'Course created successfully.');
+    return redirect()->route('courses.index')->with('success', 'Course created successfully.');
 }
+
 
 
 public function destroy($id)
@@ -154,6 +155,7 @@ public function update(Request $request, $id)
 
     return redirect()->route('admin.dashboard')->with('success', 'Course updated successfully');
 }
+
 
 
 
