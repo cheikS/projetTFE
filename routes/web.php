@@ -24,6 +24,8 @@ Route::get('/dashboard', function () {
 
 
 Route::middleware('auth')->group(function () {
+    Route::put('/admin/courses/{id}', [CourseController::class, 'update'])->name('courses.update');
+    Route::get('/admin/courses/edit', [CourseController::class, 'edit'])->name('courses.edit');
     Route::delete('admin/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
     Route::get('/instructor/dashboard', [UserController::class, 'instructorDashboard'])->name('instructor.dashboard');
     Route::get('/admin/dashboard', [UserController::class, 'adminDashboard'])->name('admin.dashboard');

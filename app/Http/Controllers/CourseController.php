@@ -127,5 +127,34 @@ public function destroy($id)
     return redirect()->route('admin.dashboard')->with('success', 'Course deleted successfully');
 }
 
+public function edit()
+{
+    $courses = Course::all(); // ou tout autre logique pour récupérer les cours à éditer
+    return Inertia::render('Courses/Edit', [
+        'courses' => $courses,
+        // Ajoutez d'autres données nécessaires pour l'édition
+    ]);
+}
+
+public function update(Request $request, $id)
+{
+    $course = Course::findOrFail($id);
+
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+        'duration' => 'required|integer',
+        'level' => 'required|string',
+        'language' => 'required|string',
+        'price' => 'required|numeric',
+        'category' => 'required|string',
+    ]);
+
+    $course->update($validated);
+
+    return redirect()->route('admin.dashboard')->with('success', 'Course updated successfully');
+}
+
+
 
 }

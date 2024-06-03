@@ -9,11 +9,22 @@
                 <h3 class="text-lg font-medium mb-4">Welcome to the Admin Dashboard</h3>
                 <p>This section is only accessible by administrators.</p>
                 
-                <div class="mt-4">
-                    <Link :href="route('courses.create')" class="btn btn-primary">Add New Course</Link>
+                <!-- Section pour ajouter un nouveau cours -->
+                <div class="mt-4 mb-4 text-center">
+                    <Link :href="route('courses.create')" class="btn btn-primary bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg text-lg shadow-md">
+                        Add New Course
+                    </Link>
                 </div>
 
-                <div class="mt-4">
+                <!-- Section pour modifier un cours -->
+                <div class="mb-8 text-center">
+                    <Link :href="route('courses.edit')" class="btn btn-primary bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-lg text-lg shadow-md">
+                        Edit Course
+                    </Link>
+                </div>
+
+                <!-- Section pour supprimer un cours -->
+                <div class="mt-8">
                     <h3 class="text-lg font-medium mb-4">Delete a Course</h3>
                     <form :action="`/admin/courses/${selectedCourseId}`" method="POST">
                         <input type="hidden" name="_method" value="DELETE">
@@ -33,7 +44,8 @@
                     </form>
                 </div>
 
-                <div class="mt-4">
+                <!-- Section pour supprimer un utilisateur -->
+                <div class="mt-8">
                     <h3 class="text-lg font-medium mb-4">Delete a User</h3>
                     <form :action="`/admin/users/${selectedUserId}`" method="POST">
                         <input type="hidden" name="_method" value="DELETE">
@@ -53,11 +65,15 @@
                     </form>
                 </div>
 
-                <div v-if="successMessage" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mt-6" role="alert">
+                <!-- Message de succès -->
+                <div v-if="successMessage" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mt-8" role="alert">
                     <strong class="font-bold">Success!</strong>
                     <span class="block sm:inline">{{ successMessage }}</span>
                     <span class="absolute top-0 bottom-0 right-0 px-4 py-3" @click="successMessage = ''">
-                        <svg class="fill-current h-6 w-6 text-green-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><title>Close</title><path d="M14.348 5.652a1 1 0 010 1.414L11.414 10l2.934 2.934a1 1 0 01-1.414 1.414L10 11.414l-2.934-2.934a1 1 0 01-1.414-1.414L8.586 10 5.652 7.066a1 1 0 011.414-1.414L10 8.586l2.934-2.934a1 1 0 011.414 0z"/></svg>
+                        <svg class="fill-current h-6 w-6 text-green-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <title>Close</title>
+                            <path d="M14.348 5.652a1 1 0 010 1.414L11.414 10l2.934 2.934a1 1 0 01-1.414 1.414L10 11.414l-2.934-2.934a1 1 0 01-1.414-1.414L8.586 10 5.652 7.066a1 1 0 011.414-1.414L10 8.586l2.934-2.934a1 1 0 011.414 0z"/>
+                        </svg>
                     </span>
                 </div>
                 
@@ -71,14 +87,17 @@ import { ref, onMounted, watchEffect } from 'vue';
 import { Link, usePage } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
+// Récupération des props de la page
 const { props } = usePage();
 const courses = props.courses;
 const users = props.users;
-const selectedCourseId = ref('');
-const selectedUserId = ref('');
 const successMessage = ref(props.successMessage);
 
-// Get the CSRF token safely after the DOM is loaded
+// Variables pour stocker les IDs sélectionnés
+const selectedCourseId = ref('');
+const selectedUserId = ref('');
+
+// Récupération du token CSRF après le montage du composant
 const csrfToken = ref('');
 onMounted(() => {
     const csrfMetaTag = document.querySelector('meta[name="csrf-token"]');
@@ -87,7 +106,7 @@ onMounted(() => {
     }
 });
 
-// Watch for successMessage changes and clear it after 3 seconds
+// Effacer le message de succès après 3 secondes
 watchEffect(() => {
     if (successMessage.value) {
         setTimeout(() => {
