@@ -12,4 +12,9 @@ class UserController extends Controller
     {
         return inertia('Admin/AdminDashboard');
     }
+
+    public function instructorDashboard()
+    {
+        return inertia('Instructor/InstructorDashboard');
+    }
 }
