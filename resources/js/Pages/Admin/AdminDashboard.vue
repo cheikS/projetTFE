@@ -32,7 +32,27 @@
                         </div>
                     </form>
                 </div>
-                
+
+                <div class="mt-4">
+                    <h3 class="text-lg font-medium mb-4">Delete a User</h3>
+                    <form :action="`/admin/users/${selectedUserId}`" method="POST">
+                        <input type="hidden" name="_method" value="DELETE">
+                        <input type="hidden" name="_token" :value="csrfToken">
+                        <div>
+                            <label for="user_id">Select User to Delete</label>
+                            <select v-model="selectedUserId" id="user_id" class="mt-1 block w-full">
+                                <option value="" disabled>Select a user</option>
+                                <option v-for="user in users" :key="user.id" :value="user.id">
+                                    {{ user.firstname }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-danger" :disabled="!selectedUserId">Delete User</button>
+                        </div>
+                    </form>
+                </div>
+
                 <div v-if="successMessage" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mt-6" role="alert">
                     <strong class="font-bold">Success!</strong>
                     <span class="block sm:inline">{{ successMessage }}</span>
@@ -53,7 +73,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 const { props } = usePage();
 const courses = props.courses;
+const users = props.users;
 const selectedCourseId = ref('');
+const selectedUserId = ref('');
 const successMessage = ref(props.successMessage);
 
 // Get the CSRF token safely after the DOM is loaded

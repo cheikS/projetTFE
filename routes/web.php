@@ -24,6 +24,7 @@ Route::get('/dashboard', function () {
 
 
 Route::middleware('auth')->group(function () {
+    Route::delete('admin/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
     Route::get('/instructor/dashboard', [UserController::class, 'instructorDashboard'])->name('instructor.dashboard');
     Route::get('/admin/dashboard', [UserController::class, 'adminDashboard'])->name('admin.dashboard');
     Route::post('/messages/reply', [MessageController::class, 'reply'])->name('messages.reply');
