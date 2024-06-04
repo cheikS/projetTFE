@@ -1,3 +1,37 @@
+<script setup>
+import { ref, onMounted, watchEffect } from 'vue';
+import { Link, usePage } from '@inertiajs/vue3';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+
+// Récupération des props de la page
+const { props } = usePage();
+const courses = props.courses;
+const users = props.users;
+const successMessage = ref(props.successMessage);
+
+// Variables pour stocker les IDs sélectionnés
+const selectedCourseId = ref('');
+const selectedUserId = ref('');
+
+// Récupération du token CSRF après le montage du composant
+const csrfToken = ref('');
+onMounted(() => {
+    const csrfMetaTag = document.querySelector('meta[name="csrf-token"]');
+    if (csrfMetaTag) {
+        csrfToken.value = csrfMetaTag.getAttribute('content');
+    }
+});
+
+// Effacer le message de succès après 3 secondes
+watchEffect(() => {
+    if (successMessage.value) {
+        setTimeout(() => {
+            successMessage.value = '';
+        }, 3000);
+    }
+});
+</script>
+
 <template>
     <AuthenticatedLayout>
         <template #header>
@@ -8,6 +42,18 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <h3 class="text-lg font-medium mb-4">Welcome to the Admin Dashboard</h3>
                 <p>This section is only accessible by administrators.</p>
+
+                <!-- Message de succès -->
+                <div v-if="successMessage" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mt-8" role="alert">
+                    <strong class="font-bold">Success!</strong>
+                    <span class="block sm:inline">{{ successMessage }}</span>
+                    <span class="absolute top-0 bottom-0 right-0 px-4 py-3" @click="successMessage = ''">
+                        <svg class="fill-current h-6 w-6 text-green-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <title>Close</title>
+                            <path d="M14.348 5.652a1 1 0 010 1.414L11.414 10l2.934 2.934a1 1 0 01-1.414 1.414L10 11.414l-2.934-2.934a1 1 0 01-1.414-1.414L8.586 10 5.652 7.066a1 1 0 011.414-1.414L10 8.586l2.934-2.934a1 1 0 011.414 0z"/>
+                        </svg>
+                    </span>
+                </div>
                 
                 <!-- Section pour ajouter un nouveau cours -->
                 <div class="mt-4 mb-4 text-center">
@@ -65,53 +111,9 @@
                     </form>
                 </div>
 
-                <!-- Message de succès -->
-                <div v-if="successMessage" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mt-8" role="alert">
-                    <strong class="font-bold">Success!</strong>
-                    <span class="block sm:inline">{{ successMessage }}</span>
-                    <span class="absolute top-0 bottom-0 right-0 px-4 py-3" @click="successMessage = ''">
-                        <svg class="fill-current h-6 w-6 text-green-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                            <title>Close</title>
-                            <path d="M14.348 5.652a1 1 0 010 1.414L11.414 10l2.934 2.934a1 1 0 01-1.414 1.414L10 11.414l-2.934-2.934a1 1 0 01-1.414-1.414L8.586 10 5.652 7.066a1 1 0 011.414-1.414L10 8.586l2.934-2.934a1 1 0 011.414 0z"/>
-                        </svg>
-                    </span>
-                </div>
                 
             </div>
         </div>
     </AuthenticatedLayout>
 </template>
 
-<script setup>
-import { ref, onMounted, watchEffect } from 'vue';
-import { Link, usePage } from '@inertiajs/vue3';
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-
-// Récupération des props de la page
-const { props } = usePage();
-const courses = props.courses;
-const users = props.users;
-const successMessage = ref(props.successMessage);
-
-// Variables pour stocker les IDs sélectionnés
-const selectedCourseId = ref('');
-const selectedUserId = ref('');
-
-// Récupération du token CSRF après le montage du composant
-const csrfToken = ref('');
-onMounted(() => {
-    const csrfMetaTag = document.querySelector('meta[name="csrf-token"]');
-    if (csrfMetaTag) {
-        csrfToken.value = csrfMetaTag.getAttribute('content');
-    }
-});
-
-// Effacer le message de succès après 3 secondes
-watchEffect(() => {
-    if (successMessage.value) {
-        setTimeout(() => {
-            successMessage.value = '';
-        }, 3000);
-    }
-});
-</script>

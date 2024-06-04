@@ -102,20 +102,21 @@ public function create()
 
 public function store(Request $request)
 {
-    $validated = $request->validate([
+    $request->validate([
         'title' => 'required|string|max:255',
         'description' => 'required|string',
-        'instructor_id' => 'required|exists:users,id',
-        'duration' => 'required|integer',
+        'instructor_id' => 'required|exists:users,id', 
+        'duration' => 'required|numeric|min:0',
         'level' => 'required|string',
         'language' => 'required|string',
-        'price' => 'required|numeric',
+        'price' => 'required|numeric|min:0',
         'category' => 'required|string',
     ]);
 
-    Course::create($validated);
+    // Création du cours
+    $course = Course::create($request->all());
 
-    return redirect()->route('courses.index')->with('success', 'Course created successfully.');
+    return redirect()->route('admin.dashboard')->with('success', 'Course updated successfully');
 }
 
 
@@ -130,9 +131,11 @@ public function destroy($id)
 
 public function edit()
 {
+    $instructors = User::whereRole('instructor')->get();
     $courses = Course::all(); // ou tout autre logique pour récupérer les cours à éditer
     return Inertia::render('Courses/Edit', [
         'courses' => $courses,
+        'instructors' => $instructors,
         // Ajoutez d'autres données nécessaires pour l'édition
     ]);
 }
@@ -144,6 +147,7 @@ public function update(Request $request, $id)
     $validated = $request->validate([
         'title' => 'required|string|max:255',
         'description' => 'required|string',
+        'instructor_id' => 'required|exists:users,id',
         'duration' => 'required|integer',
         'level' => 'required|string',
         'language' => 'required|string',

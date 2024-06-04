@@ -19,10 +19,23 @@
                     </span>
                 </div>
 
+                <!-- Display error messages -->
+                <div v-if="Object.keys(errors).length > 0" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-6" role="alert">
+                    <strong class="font-bold">Errors!</strong>
+                    <ul>
+                        <li v-for="(error, key) in errors" :key="key">{{ error }}</li>
+                    </ul>
+                    <span class="absolute top-0 bottom-0 right-0 px-4 py-3" @click="errors = {}">
+                        <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                            <title>Close</title>
+                            <path d="M14.348 5.652a1 1 0 010 1.414L11.414 10l2.934 2.934a1 1 0 01-1.414 1.414L10 11.414l-2.934-2.934a1 1 0 01-1.414-1.414L8.586 10 5.652 7.066a1 1 0 011.414-1.414L10 8.586l2.934-2.934a1 1 0 011.414 0z"/></svg>
+                    </span>
+                </div>
+
                 <form @submit.prevent="submit">
                     <div>
                         <label for="title">Title</label>
-                        <input v-model="form.title" id="title" type="text"  class="mt-1 block w-full" :class="{'border-red-500': errors.title}">
+                        <input v-model="form.title" id="title" type="text" required class="mt-1 block w-full" :class="{'border-red-500': errors.title}">
                         <span v-if="errors.title" class="text-red-500 text-sm">{{ errors.title }}</span>
                     </div>
                     <div class="mt-4">
@@ -32,7 +45,7 @@
                     </div>
                     <div class="mt-4">
                         <label for="instructor_id">Instructor</label>
-                        <select v-model="form.instructor_id" id="instructor_id" class="mt-1 block w-full" :class="{'border-red-500': errors.instructor_id}">
+                        <select v-model="form.instructor_id" id="instructor_id" required class="mt-1 block w-full" :class="{'border-red-500': errors.instructor_id}">
                             <option value="" disabled>Select an instructor</option>
                             <option v-for="instructor in instructors" :key="instructor.id" :value="instructor.id">
                                 {{ instructor.firstname }} {{ instructor.lastname }}
@@ -42,12 +55,13 @@
                     </div>
                     <div class="mt-4">
                         <label for="duration">Duration</label>
-                        <input v-model="form.duration" id="duration" type="number" class="mt-1 block w-full" :class="{'border-red-500': errors.duration}">
+                        <input v-model="form.duration" id="duration" type="number" step="0.01" required class="mt-1 block w-full" :class="{'border-red-500': errors.duration}">
                         <span v-if="errors.duration" class="text-red-500 text-sm">{{ errors.duration }}</span>
                     </div>
                     <div class="mt-4">
                         <label for="level">Level</label>
-                        <select v-model="form.level" id="level" class="mt-1 block w-full" :class="{'border-red-500': errors.level}">
+                        <select v-model="form.level" id="level" required class="mt-1 block w-full" :class="{'border-red-500': errors.level}">
+                            <option value="" disabled>Select a level</option>
                             <option value="Beginner">Beginner</option>
                             <option value="Intermediate">Intermediate</option>
                             <option value="Advanced">Advanced</option>
@@ -56,7 +70,8 @@
                     </div>
                     <div class="mt-4">
                         <label for="language">Language</label>
-                        <select v-model="form.language" id="language" class="mt-1 block w-full" :class="{'border-red-500': errors.language}">
+                        <select v-model="form.language" id="language" required class="mt-1 block w-full" :class="{'border-red-500': errors.language}">
+                            <option value="" disabled>Select a language</option>
                             <option value="French">French</option>
                             <option value="English">English</option>
                         </select>
@@ -64,12 +79,13 @@
                     </div>
                     <div class="mt-4">
                         <label for="price">Price</label>
-                        <input v-model="form.price" id="price" type="number" step="0.01" class="mt-1 block w-full" :class="{'border-red-500': errors.price}">
+                        <input v-model="form.price" id="price" type="number" step="0.01" required class="mt-1 block w-full" :class="{'border-red-500': errors.price}">
                         <span v-if="errors.price" class="text-red-500 text-sm">{{ errors.price }}</span>
                     </div>
                     <div class="mt-4">
                         <label for="category">Category</label>
-                        <select v-model="form.category" id="category" class="mt-1 block w-full" :class="{'border-red-500': errors.category}">
+                        <select v-model="form.category" id="category" required class="mt-1 block w-full" :class="{'border-red-500': errors.category}">
+                            <option value="" disabled>Select a category</option>
                             <option value="Computer Science">Computer Science</option>
                             <option value="Business Administration">Business Administration</option>
                             <option value="Psychology">Psychology</option>
@@ -105,24 +121,27 @@ const form = useForm({
     description: '',
     instructor_id: '',
     duration: '',
-    level: 'Beginner', // Default to Beginner
-    language: 'French', // Default to French
+    level: '', // Default to empty to force selection
+    language: '', // Default to empty to force selection
     price: '',
-    category: 'Computer Science', // Default to Computer Science
+    category: '', // Default to empty to force selection
 });
 
 const successMessage = ref('');
 const errors = ref({});
 
 function submit() {
-    form.post(route('courses.store'), {
-        onSuccess: (page) => {
+    form.transform((data) => ({
+        ...data,
+        price: parseFloat(data.price),
+        duration: parseFloat(data.duration),
+    })).post(route('courses.store'), {
+        onSuccess: () => {
             successMessage.value = 'Course created successfully!';
             form.reset();
         },
         onError: (page) => {
             // Handle errors and show error messages
-            console.error(page.props.errors);
             errors.value = page.props.errors;
         }
     });
