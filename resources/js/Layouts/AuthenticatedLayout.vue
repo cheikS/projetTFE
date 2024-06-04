@@ -25,12 +25,14 @@ const user = props.auth.user;
                                 </Link>
                             </div>
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">Dashboard</NavLink>
-                                <NavLink :href="route('messages.index')" :active="route().current('messages.index')">Messages</NavLink>
+                                <!-- Lien Dashboard visible uniquement par les étudiants -->
+                                <NavLink v-if="user.role === 'student'" :href="route('dashboard')" :active="route().current('dashboard')">Dashboard</NavLink>
                                 <!-- Lien Admin visible uniquement par les administrateurs -->
-                                <NavLink v-if="user.role === 'admin'" :href="route('admin.dashboard')" :active="route().current('admin.dashboard')">Admin</NavLink>
+                                <NavLink v-if="user.role === 'admin'" :href="route('admin.dashboard')" :active="route().current('admin.dashboard')">Dashboard</NavLink>
                                 <!-- Lien Instructor visible uniquement par les instructeurs -->
-                                <NavLink v-if="user.role === 'instructor'" :href="route('instructor.dashboard')" :active="route().current('instructor.dashboard')">Instructor</NavLink>
+                                <NavLink v-if="user.role === 'instructor'" :href="route('instructor.dashboard')" :active="route().current('instructor.dashboard')">Dashboard</NavLink>
+                                <NavLink :href="route('messages.index')" :active="route().current('messages.index')">Messages</NavLink>
+                                
                             </div>
                         </div>
                         <div class="hidden sm:flex sm:items-center sm:ml-6">
@@ -83,12 +85,14 @@ const user = props.auth.user;
                 </div>
                 <div :class="{ 'block': showingNavigationDropdown, 'hidden': !showingNavigationDropdown }" class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">Dashboard</ResponsiveNavLink>
-                        <ResponsiveNavLink :href="route('messages.index')" :active="route().current('messages.index')">Messages</ResponsiveNavLink>
-                        <!-- Lien Admin visible uniquement par les administrateurs -->
-                        <ResponsiveNavLink v-if="user.role === 'admin'" :href="route('admin.dashboard')" :active="route().current('admin.dashboard')">Admin</ResponsiveNavLink>
+                         <!-- Lien Admin visible uniquement par les administrateurs -->
+                         <ResponsiveNavLink v-if="user.role === 'admin'" :href="route('admin.dashboard')" :active="route().current('admin.dashboard')">Dashboard</ResponsiveNavLink>
                         <!-- Lien Instructor visible uniquement par les instructeurs -->
-                        <ResponsiveNavLink v-if="user.role === 'instructor'" :href="route('instructor.dashboard')" :active="route().current('instructor.dashboard')">Instructor</ResponsiveNavLink>
+                        <ResponsiveNavLink v-if="user.role === 'instructor'" :href="route('instructor.dashboard')" :active="route().current('instructor.dashboard')">Dashboard</ResponsiveNavLink>
+                        <!-- Lien Dashboard visible uniquement par les étudiants -->
+                        <ResponsiveNavLink v-if="user.role === 'student'" :href="route('dashboard')" :active="route().current('dashboard')">Dashboard</ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('messages.index')" :active="route().current('messages.index')">Messages</ResponsiveNavLink>
+                       
                     </div>
                     <div class="pt-4 pb-1 border-t border-gray-200">
                         <div class="px-4">
