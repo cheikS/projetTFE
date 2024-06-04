@@ -14,13 +14,16 @@ class MessageController extends Controller
 
     public function index()
     {
-        $receiver_id = Auth::id();
-        $messages = Message::where('receiver_id', $receiver_id)->with('sender')->get();
-
+        $user = Auth::user();
+        $messages = Message::where('receiver_id', $user->id)->get();
+        $sentMessages = Message::where('sender_id', $user->id)->get();
+    
         return Inertia::render('Messages/Index', [
             'messages' => $messages,
+            'sentMessages' => $sentMessages,
         ]);
     }
+    
 
 
     public function store(Request $request)
