@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('admin/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
     Route::get('/instructor/dashboard', [UserController::class, 'instructorDashboard'])->name('instructor.dashboard');
     Route::get('/admin/dashboard', [UserController::class, 'adminDashboard'])->name('admin.dashboard');
+    Route::get('/messages/sent', [MessageController::class, 'sentMessages'])->name('messages.sent');
     Route::post('/messages/reply', [MessageController::class, 'reply'])->name('messages.reply');
     Route::get('/messages/{id}', [MessageController::class, 'show'])->name('messages.show');
     Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');

@@ -35,8 +35,6 @@
                     </Link>
                 </div>
 
-                
-
                 <!-- Section pour supprimer un cours -->
                 <div class="mt-8">
                     <h3 class="text-lg font-medium mb-4">Delete a Course</h3>
@@ -78,6 +76,7 @@
                         </div>
                     </form>
                 </div>
+
                 <!-- Section pour changer le rôle d'un utilisateur -->
                 <div class="mt-8">
                     <h3 class="text-lg font-medium mb-4">Change User Role</h3>
@@ -133,6 +132,8 @@ onMounted(() => {
     const csrfMetaTag = document.querySelector('meta[name="csrf-token"]');
     if (csrfMetaTag) {
         csrfToken.value = csrfMetaTag.getAttribute('content');
+    } else {
+        console.error("CSRF token not found in meta tags");
     }
 });
 
@@ -159,6 +160,7 @@ const changeUserRole = () => {
         },
         onError: (errors) => {
             console.error(errors);
+            successMessage.value = 'Failed to update user role. Please try again.';
         }
     });
 };

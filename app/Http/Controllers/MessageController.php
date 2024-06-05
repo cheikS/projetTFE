@@ -23,6 +23,14 @@ class MessageController extends Controller
             'sentMessages' => $sentMessages,
         ]);
     }
+
+    public function sentMessages()
+    {
+        $messages = auth()->user()->sentMessages()->with('receiver')->get(); // Charger les messages envoyés avec le récepteur
+        return Inertia::render('Messages/SentMessages', [
+            'messages' => $messages->toArray()
+        ]);
+    }
     
 
 

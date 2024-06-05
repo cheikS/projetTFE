@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 class UserController extends Controller
 {
-    // Autres méthodes existantes...
 
     public function adminDashboard()
     {
