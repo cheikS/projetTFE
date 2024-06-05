@@ -1,3 +1,12 @@
+<script setup>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { usePage } from '@inertiajs/vue3';
+
+// Récupération des props de la page
+const { props } = usePage();
+const courses = props.courses;
+</script>
+
 <template>
     <AuthenticatedLayout>
         <template #header>
@@ -8,11 +17,18 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <h3 class="text-lg font-medium mb-4">Welcome to the Instructor Dashboard</h3>
                 <p>This section is only accessible by instructors.</p>
+
+                <h3 class="text-lg font-medium mb-4 mt-8">Your Courses</h3>
+                <ul v-if="courses.length > 0" class="mb-6">
+                    <li v-for="course in courses" :key="course.id" class="mb-4">
+                        <div>
+                            <p><strong>Title:</strong> {{ course.title }}</p>
+                            <p><strong>Description:</strong> {{ course.description }}</p>
+                        </div>
+                    </li>
+                </ul>
+                <p v-else class="text-center text-gray-500">You have no courses assigned.</p>
             </div>
         </div>
     </AuthenticatedLayout>
 </template>
-
-<script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-</script>

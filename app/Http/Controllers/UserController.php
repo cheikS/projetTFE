@@ -27,7 +27,10 @@ class UserController extends Controller
 
     public function instructorDashboard()
     {
-        return inertia('Instructor/InstructorDashboard');
+        $courses = auth()->user()->instructedCourses; // Récupérer les cours de l'instructeur connecté
+        return Inertia::render('Instructor/InstructorDashboard', [
+            'courses' => $courses
+        ]);
     }
 
     public function destroy($id)
