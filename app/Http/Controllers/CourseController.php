@@ -61,7 +61,7 @@ class CourseController extends Controller
             'course_id' => $course->id,
         ]);
 
-        return Redirect::route('courses.index');
+        return Redirect::route('dashboard');
     }
     
     public function registeredCourses()

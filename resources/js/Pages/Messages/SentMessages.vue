@@ -22,6 +22,7 @@ const sentMessages = props.messages ? props.messages.reverse() : [];
                     <div>
                         <p v-if="message.receiver"><strong>To:</strong> {{ message.receiver.firstname }} {{ message.receiver.lastname }}</p>
                         <p><strong>Subject:</strong> {{ message.subject }}</p>
+                        <p><strong>Content:</strong> {{ message.content }}</p>
                         <p><strong>Sent on:</strong> {{ new Date(message.created_at).toLocaleString() }}</p>
                     </div>
                 </li>
