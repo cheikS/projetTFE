@@ -35,8 +35,15 @@
                     </Link>
                 </div>
 
+                <!-- Bouton pour afficher les formulaires cachés -->
+                <div class="text-center mb-8">
+                    <button @click="toggleForms" v-if="!formsVisible" class="btn btn-primary bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg text-lg shadow-md">
+                        More
+                    </button>
+                </div>
+
                 <!-- Section pour supprimer un cours -->
-                <div class="mt-8">
+                <div v-if="formsVisible" class="mt-8">
                     <h3 class="text-lg font-medium mb-4">Delete a Course</h3>
                     <form :action="`/admin/courses/${selectedCourseId}`" method="POST">
                         <input type="hidden" name="_method" value="DELETE">
@@ -57,7 +64,7 @@
                 </div>
 
                 <!-- Section pour supprimer un utilisateur -->
-                <div class="mt-8">
+                <div v-if="formsVisible" class="mt-8">
                     <h3 class="text-lg font-medium mb-4">Delete a User</h3>
                     <form :action="`/admin/users/${selectedUserId}`" method="POST">
                         <input type="hidden" name="_method" value="DELETE">
@@ -78,9 +85,10 @@
                 </div>
 
                 <!-- Section pour changer le rôle d'un utilisateur -->
-                <div class="mt-8">
+                <div v-if="formsVisible" class="mt-8">
                     <h3 class="text-lg font-medium mb-4">Change User Role</h3>
                     <form @submit.prevent="changeUserRole">
+                        <input type="hidden" name="_token" :value="csrfToken">
                         <div class="mb-4">
                             <label for="user_id">Select User</label>
                             <select v-model="selectedUserId" id="user_id" class="mt-1 block w-full" required>
@@ -99,8 +107,8 @@
                                 <option value="student">Student</option>
                             </select>
                         </div>
-                        <div class="flex justify-end">
-                            <button type="submit" class="btn btn-primary bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg text-lg shadow-md">Change Role</button>
+                        <div class="mt-4">
+                            <button type="submit">Change Role</button>
                         </div>
                     </form>
                 </div>
@@ -111,12 +119,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watchEffect } from 'vue';
-import { Link, usePage, router } from '@inertiajs/vue3';
+import { ref, watch, onMounted } from 'vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { usePage, Link, router } from '@inertiajs/vue3';
+
+const { props } = usePage();
 
 // Récupération des props de la page
-const { props } = usePage();
 const courses = props.courses;
 const users = props.users;
 const successMessage = ref(props.successMessage);
@@ -125,6 +134,7 @@ const successMessage = ref(props.successMessage);
 const selectedCourseId = ref('');
 const selectedUserId = ref('');
 const selectedRole = ref('');
+const formsVisible = ref(false);
 
 // Récupération du token CSRF après le montage du composant
 const csrfToken = ref('');
@@ -135,11 +145,17 @@ onMounted(() => {
     } else {
         console.error("CSRF token not found in meta tags");
     }
+
+    // Vérifier si les formulaires doivent être visibles
+    if (sessionStorage.getItem('formsVisible') === 'true') {
+        formsVisible.value = true;
+        sessionStorage.removeItem('formsVisible'); // Supprimer pour éviter des problèmes ultérieurs
+    }
 });
 
 // Effacer le message de succès après 3 secondes
-watchEffect(() => {
-    if (successMessage.value) {
+watch(successMessage, (newVal) => {
+    if (newVal) {
         setTimeout(() => {
             successMessage.value = '';
         }, 3000);
@@ -163,5 +179,12 @@ const changeUserRole = () => {
             successMessage.value = 'Failed to update user role. Please try again.';
         }
     });
+};
+
+// Function to show forms and reload the page
+const toggleForms = () => {
+    formsVisible.value = true;
+    sessionStorage.setItem('formsVisible', 'true');
+    location.reload();
 };
 </script>

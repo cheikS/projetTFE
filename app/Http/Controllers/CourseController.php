@@ -160,7 +160,39 @@ public function update(Request $request, $id)
     return redirect()->route('admin.dashboard')->with('success', 'Course updated successfully');
 }
 
+public function showAddVideoForm(Course $course)
+    {
+        return inertia('Courses/AddVideo', [
+            'course' => $course
+        ]);
+    }
 
+    // Enregistrer une nouvelle vidéo pour le cours
+    public function storeVideo(Request $request, Course $course)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'url' => 'required|url'
+        ]);
 
+        $course->videos()->create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'url' => $request->url
+        ]);
 
+        return redirect()->route('courses.add-video', $course->id)->with('success', 'Video added successfully!');
+    }
+
+    public function showVideos(Course $course)
+    {
+        // Charger les vidéos du cours
+        $videos = $course->videos;
+
+        return Inertia::render('Courses/Videos', [
+            'course' => $course,
+            'videos' => $videos
+        ]);
+    }
 }

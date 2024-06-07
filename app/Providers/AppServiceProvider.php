@@ -1,25 +1,31 @@
 <?php
 
-// app/Providers/AuthServiceProvider.php
+// app/Providers/AppServiceProvider.php
 
 namespace App\Providers;
 
-use App\Models\User;
-use App\Policies\UserPolicy;
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\ServiceProvider;
+use App\Providers\AuthServiceProvider; // Vérifiez cette ligne et assurez-vous qu'elle est correcte
 
-class AuthServiceProvider extends ServiceProvider
+class AppServiceProvider extends ServiceProvider
 {
-    
     /**
-     * Register any authentication / authorization services.
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        //
+    }
+
+    /**
+     * Bootstrap any application services.
      *
      * @return void
      */
     public function boot()
     {
-        $this->registerPolicies();
-
         //
     }
 }

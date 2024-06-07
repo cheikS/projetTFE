@@ -22,6 +22,8 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('role')->default('student'); // valeur par défaut 'user' pour le rôle
+            $table->rememberToken(); // Ajout de la colonne remember_token
+            $table->timestamps(); // Ajout des colonnes created_at et updated_at
         });
     }
 

@@ -1,12 +1,3 @@
-<script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { usePage } from '@inertiajs/vue3';
-
-// Récupération des props de la page
-const { props } = usePage();
-const courses = props.courses;
-</script>
-
 <template>
     <AuthenticatedLayout>
         <template #header>
@@ -22,7 +13,11 @@ const courses = props.courses;
                 <ul v-if="courses.length > 0" class="mb-6">
                     <li v-for="course in courses" :key="course.id" class="mb-4">
                         <div>
-                            <p><strong>Title:</strong> {{ course.title }}</p>
+                            <p><strong>Title:</strong> 
+                                <Link :href="`/courses/${course.id}/add-video`" class="text-blue-500 hover:underline">
+                                    {{ course.title }}
+                                </Link>
+                            </p>
                             <p><strong>Description:</strong> {{ course.description }}</p>
                         </div>
                     </li>
@@ -32,3 +27,13 @@ const courses = props.courses;
         </div>
     </AuthenticatedLayout>
 </template>
+
+<script setup>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { usePage } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
+
+// Récupération des props de la page
+const { props } = usePage();
+const courses = props.courses;
+</script>

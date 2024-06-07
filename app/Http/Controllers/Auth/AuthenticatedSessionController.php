@@ -29,8 +29,10 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        // Authenticate the user and include the remember functionality
         $request->authenticate();
 
+        // Regenerate the session after successful login
         $request->session()->regenerate();
 
         return $this->authenticated($request, Auth::user());
@@ -59,7 +61,7 @@ class AuthenticatedSessionController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
-        // Exemple de logique basée sur le rôle de l'utilisateur
+        // Redirect based on user roles
         if ($user->hasRole('admin')) {
             return redirect()->route('admin.dashboard');
         } elseif ($user->hasRole('instructor')) {
