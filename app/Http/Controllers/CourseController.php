@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\User;
+use App\Models\Video;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\Request;
@@ -26,6 +27,33 @@ class CourseController extends Controller
         ]);
     }
 
+    public function manageVideos(Course $course)
+    {
+        $videos = $course->videos; // Assuming a hasMany relationship with Video
+
+        return Inertia::render('Instructor/ManageVideo', [
+            'course' => $course,
+            'videos' => $videos,
+        ]);
+    }
+
+    public function destroyVideo(Course $course, Video $video)
+    {
+        // Ensure the video belongs to the course and is managed by the instructor
+        if ($video->course_id !== $course->id) {
+            abort(403, 'Unauthorized action.');
+        }
+    
+        // Check if the authenticated user has permission to delete the video
+        if (!auth()->user()->can('delete', $video)) {
+            abort(403, 'Unauthorized action.');
+        }
+    
+        $video->delete();
+    
+        return redirect()->route('instructor.courses.manage-videos', $course->id)->with('message', 'Video deleted successfully.');
+    }
+    
     /**
      * Display the specified course.
      */
@@ -182,7 +210,7 @@ public function showAddVideoForm(Course $course)
             'url' => $request->url
         ]);
 
-        return redirect()->route('courses.add-video', $course->id)->with('success', 'Video added successfully!');
+        return redirect()->route('manage-videos', $course->id)->with('success', 'Video added successfully!');
     }
 
     public function showVideos(Course $course)
@@ -190,9 +218,9 @@ public function showAddVideoForm(Course $course)
         // Charger les vidéos du cours
         $videos = $course->videos;
 
-        return Inertia::render('Courses/Videos', [
-            'course' => $course,
-            'videos' => $videos
+        return Inertia::render('ManageVideos', [
+            'videos' => $videos, // Collection de vidéos liées au cours
+            'successMessage' => session('successMessage') // Message de succès si disponible
         ]);
     }
 }

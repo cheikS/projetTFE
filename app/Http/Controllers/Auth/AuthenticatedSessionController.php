@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
+use Illuminate\Validation\ValidationException; 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,16 +27,32 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(Request $request)
     {
-        // Authenticate the user and include the remember functionality
-        $request->authenticate();
+        // Validate the request data
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
 
-        // Regenerate the session after successful login
+        // Attempt to log the user in
+        if (!Auth::attempt($credentials, $request->boolean('remember'))) {
+            // If the authentication attempt fails, throw a validation exception
+            throw ValidationException::withMessages([
+                'email' => __('auth.failed'), // Use the appropriate translation for 'auth.failed'
+            ]);
+        }
+
+        // Regenerate the session to prevent session fixation attacks
         $request->session()->regenerate();
 
-        return $this->authenticated($request, Auth::user());
+        // Get the user's role after successful authentication
+        $role = Auth::user()->role; // Assumes a 'role' attribute on the User model
+
+        // Redirect based on the user's role
+        return Inertia::location(route('redirect.role', ['role' => $role]));
     }
+
 
     /**
      * Destroy an authenticated session.
@@ -52,24 +68,5 @@ class AuthenticatedSessionController extends Controller
         return redirect('/');
     }
 
-    /**
-     * Handle the response after the user was authenticated.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  mixed  $user
-     * @return mixed
-     */
-    protected function authenticated(Request $request, $user)
-    {
-        // Redirect based on user roles
-        if ($user->hasRole('admin')) {
-            return redirect()->route('admin.dashboard');
-        } elseif ($user->hasRole('instructor')) {
-            return redirect()->route('instructor.dashboard');
-        } elseif ($user->hasRole('student')) {
-            return redirect()->route('dashboard');
-        } else {
-            return redirect()->route('home');
-        }
-    }
+    
 }

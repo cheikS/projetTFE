@@ -14,7 +14,7 @@
                     <li v-for="course in courses" :key="course.id" class="mb-4">
                         <div>
                             <p><strong>Title:</strong> 
-                                <Link :href="`/courses/${course.id}/add-video`" class="text-blue-500 hover:underline">
+                                <Link :href="`/instructor/courses/${course.id}/manage-videos`" class="text-blue-500 hover:underline">
                                     {{ course.title }}
                                 </Link>
                             </p>

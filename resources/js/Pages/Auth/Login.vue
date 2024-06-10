@@ -24,7 +24,10 @@ const form = useForm({
 
 const submit = () => {
     form.post(route('login'), {
-        onFinish: () => form.reset('password'),
+        onFinish: () => {
+            // The redirection is handled by the backend via inertia location response
+            form.reset('password');
+        },
     });
 };
 </script>

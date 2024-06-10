@@ -14,9 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
-            // Ajoutez ici le middleware CheckRole
-            \App\Http\Middleware\CheckRole::class,
         ]);
+
+        //
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
