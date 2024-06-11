@@ -214,13 +214,24 @@ public function showAddVideoForm(Course $course)
     }
 
     public function showVideos(Course $course)
-    {
-        // Charger les vidéos du cours
-        $videos = $course->videos;
+{
+    // Charger les vidéos du cours
+    $videos = $course->videos;
 
-        return Inertia::render('ManageVideos', [
-            'videos' => $videos, // Collection de vidéos liées au cours
-            'successMessage' => session('successMessage') // Message de succès si disponible
-        ]);
-    }
+    // Inclure les informations du cours dans la réponse
+    return Inertia::render('Courses/Videos', [
+        'course' => $course, // Ajout de l'objet cours pour inclure son titre
+        'videos' => $videos, // Collection de vidéos liées au cours
+        'successMessage' => session('successMessage') // Message de succès si disponible
+    ]);
+}
+
+public function showVideo(Course $course, Video $video)
+{
+    return Inertia::render('Videos/VideoViewer', [
+        'course' => $course, // Données sur le cours
+        'videoUrl' => $video->url // URL de la vidéo à afficher dans l'iframe
+    ]);
+}
+
 }

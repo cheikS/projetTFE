@@ -32,19 +32,20 @@ class VideoController extends Controller
         if ($video->course_id !== $course->id) {
             abort(403, 'Unauthorized action.');
         }
-
+    
         // Valider les données de la requête
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'url' => 'required|url',
         ]);
-
+    
         // Mettre à jour la vidéo avec les nouvelles données
         $video->update($request->only('title', 'description', 'url'));
-
-        return redirect()->route('instructor.courses.manage-videos', $course->id)->with('message', 'Video updated successfully.');
+    
+        return redirect()->route('manage-videos', $course->id)->with('message', 'Video updated successfully.');
     }
+    
 
    
     public function destroy(Course $course, Video $video)
@@ -58,4 +59,6 @@ class VideoController extends Controller
 
         return redirect()->route('manage-videos', $course->id)->with('message', 'Video deleted successfully.');
     }
+
+    
 }

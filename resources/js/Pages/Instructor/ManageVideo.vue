@@ -56,9 +56,7 @@ const course = props.course;
 const videos = props.videos;
 const successMessage = ref(props.successMessage);
 
-// Log de débogage pour vérifier que les données sont reçues
-console.log('Course:', course);
-console.log('Videos:', videos);
+
 
 // Références pour les messages de réussite et d'erreur
 const deleteVideo = (videoId) => {

@@ -37,6 +37,8 @@ Route::get('/dashboard', function () {
 
 
 Route::middleware('auth')->group(function () {
+    Route::get('/courses/{course}/videos/{video}', [CourseController::class, 'showVideo'])->name('videos.show');
+    Route::put('/instructor/courses/{course}/videos/{video}', [VideoController::class, 'update'])->name('instructor.courses.update-video');
     Route::get('/instructor/courses/{course}/videos/{video}/edit', [VideoController::class, 'edit'])->name('instructor.courses.edit-video');
     Route::delete('/instructor/courses/{course}/videos/{video}', [VideoController::class, 'destroy'])->name('instructor.courses.destroy-video');
     Route::get('/instructor/courses/{course}/manage-videos', [CourseController::class, 'manageVideos'])->name('manage-videos');
