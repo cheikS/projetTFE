@@ -8,6 +8,9 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\VideoController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CommentController;
+
+
 
 
 Route::get('/', function () {
@@ -37,6 +40,7 @@ Route::get('/dashboard', function () {
 
 
 Route::middleware('auth')->group(function () {
+    Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::get('/courses/{course}/videos/{video}', [CourseController::class, 'showVideo'])->name('videos.show');
     Route::put('/instructor/courses/{course}/videos/{video}', [VideoController::class, 'update'])->name('instructor.courses.update-video');
     Route::get('/instructor/courses/{course}/videos/{video}/edit', [VideoController::class, 'edit'])->name('instructor.courses.edit-video');
