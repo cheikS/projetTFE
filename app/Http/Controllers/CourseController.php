@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\Comment;
 use App\Models\User;
 use App\Models\Video;
 use Inertia\Inertia;
@@ -228,10 +229,29 @@ public function showAddVideoForm(Course $course)
 
 public function showVideo(Course $course, Video $video)
 {
+    $comments = Comment::where('video_id', $video->id)
+                        ->with('user')
+                        ->orderBy('created_at', 'desc') // Trier par date de création décroissante
+                        ->get()
+                        ->map(function ($comment) {
+                            return [
+                                'id' => $comment->id,
+                                'content' => $comment->content,
+                                'created_at' => $comment->created_at->toDateTimeString(),
+                                'user' => [
+                                    'firstname' => $comment->user->firstname,
+                                ],
+                            ];
+                        });
+
     return Inertia::render('Videos/VideoViewer', [
-        'course' => $course, // Données sur le cours
-        'videoUrl' => $video->url // URL de la vidéo à afficher dans l'iframe
+        'course' => $course,
+        'videoId' => $video->id,
+        'videoUrl' => $video->url,
+        'comments' => $comments
     ]);
 }
+
+
 
 }

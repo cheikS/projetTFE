@@ -20,6 +20,6 @@ class CommentController extends Controller
             'content' => $request->content,
         ]);
 
-        return response()->json($comment); // Retournez le commentaire créé
+        return response()->json($comment); // Assurez-vous que vous retournez le commentaire créé en JSON
     }
 }
