@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { ref, watchEffect, computed } from 'vue';
 import { usePage } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
@@ -7,28 +7,14 @@ const { props } = usePage();
 const course = ref(props.course);
 const videos = ref(props.videos);
 
-console.log('Course:', course.value);
-console.log('Videos:', videos.value);
-
 const isLoading = ref(true);
 
-watch(() => props.course, (newCourse) => {
-    course.value = newCourse;
-    console.log('Updated Course:', newCourse);
-    checkDataLoaded();
-});
-
-watch(() => props.videos, (newVideos) => {
-    videos.value = newVideos;
-    console.log('Updated Videos:', newVideos);
-    checkDataLoaded();
-});
-
-const checkDataLoaded = () => {
+// Utiliser watchEffect pour surveiller automatiquement les changements de course et videos
+watchEffect(() => {
     if (course.value && videos.value !== undefined) {
         isLoading.value = false;
     }
-};
+});
 
 const hasVideos = computed(() => {
     return videos.value && videos.value.length > 0;
