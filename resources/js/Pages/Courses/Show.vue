@@ -3,6 +3,10 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { usePage, Link, useForm } from '@inertiajs/vue3';
 import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe('pk_live_51PeKmtAqzYZskbcuAlsbiMCZsNKFSXQtOpTH6QkzHZESI3dAdyA1mp3srbgHHDC6vA3LpTSF38qtKhDMCuDYlEjK00ZaXPOH39');
+
 
 const { props } = usePage();
 const course = props.course;
@@ -16,8 +20,23 @@ const form = useForm({
     course_id: course.id,
 });
 
-const register = () => {
-    form.post(route('courses.register', course.id));
+
+const register = async () => {
+    form.processing = true;
+
+    const response = await axios.post(route('payment.checkout', course.id), {
+        course_id: course.id,
+    });
+
+    const stripe = await stripePromise;
+    const { error } = await stripe.redirectToCheckout({
+        sessionId: response.data.id,
+    });
+
+    if (error) {
+        console.error("Stripe error:", error);
+        form.processing = false;
+    }
 };
 </script>
 

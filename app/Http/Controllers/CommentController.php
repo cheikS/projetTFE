@@ -10,8 +10,8 @@ class CommentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'video_id' => 'required|integer|exists:videos,id',
             'content' => 'required|string|max:1000',
-            'video_id' => 'required|exists:videos,id',
         ]);
 
         $comment = Comment::create([
@@ -20,6 +20,28 @@ class CommentController extends Controller
             'content' => $request->content,
         ]);
 
-        return response()->json($comment); // Assurez-vous que vous retournez le commentaire créé en JSON
+        // Check if the request expects an Inertia response
+        if ($request->wantsJson() || $request->inertia()) {
+            return back()->with('success', 'Comment submitted successfully!');
+        }
+
+        // Default to JSON response if not Inertia request
+        return response()->json($comment);
+    }
+
+    public function destroy($id)
+    {
+        // Trouver le commentaire par ID
+        $comment = Comment::findOrFail($id);
+
+        // Vérifier si l'utilisateur connecté est l'auteur du commentaire
+        if (auth()->user()->id !== $comment->user_id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        // Supprimer le commentaire
+        $comment->delete();
+
+        return response()->json(['message' => 'Comment deleted successfully']);
     }
 }

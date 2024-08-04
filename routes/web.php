@@ -9,6 +9,8 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\VideoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\PaymentController;
+
 
 
 
@@ -40,6 +42,10 @@ Route::get('/dashboard', function () {
 
 
 Route::middleware('auth')->group(function () {
+    Route::post('/courses/{course}/checkout', [PaymentController::class, 'createCheckoutSession'])->name('payment.checkout');
+    Route::get('/payment/success/{course}', [PaymentController::class, 'success'])->name('payment.success');
+    Route::get('/payment/cancel/{course}', [PaymentController::class, 'cancel'])->name('payment.cancel');
+    Route::delete('/comments/{id}', [CommentController::class, 'destroy'])->name('comments.destroy');
     Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
     Route::get('/courses/{course}/videos/{video}', [CourseController::class, 'showVideo'])->name('videos.show');
     Route::put('/instructor/courses/{course}/videos/{video}', [VideoController::class, 'update'])->name('instructor.courses.update-video');
