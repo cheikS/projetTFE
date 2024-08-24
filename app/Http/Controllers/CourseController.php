@@ -67,10 +67,9 @@ class CourseController extends Controller
     return Inertia::render('Courses/Show', [
         'course' => $course,
         'isRegistered' => $isRegistered,
+        'stripePublicKey' => env('STRIPE_PUBLISHABLE_KEY'),  // Utilisation correcte de la clé publique
     ]);
 }
-
-
     public function register(Request $request, Course $course)
     {
         $user = Auth::user();

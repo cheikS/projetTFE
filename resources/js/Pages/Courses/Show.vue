@@ -5,12 +5,13 @@ import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import { loadStripe } from '@stripe/stripe-js';
 
-const stripePromise = loadStripe('pk_live_51PeKmtAqzYZskbcuAlsbiMCZsNKFSXQtOpTH6QkzHZESI3dAdyA1mp3srbgHHDC6vA3LpTSF38qtKhDMCuDYlEjK00ZaXPOH39');
-
-
 const { props } = usePage();
 const course = props.course;
 const isRegistered = props.isRegistered;
+const stripePublicKey = props.stripePublicKey;
+
+// Vérifiez que la clé publique est bien reçue
+console.log("Stripe Public Key:", stripePublicKey);
 
 const formatDate = (dateString) => {
     return format(new Date(dateString), 'PPpp', { locale: enUS });
@@ -20,25 +21,14 @@ const form = useForm({
     course_id: course.id,
 });
 
-
 const register = async () => {
-    form.processing = true;
-
-    const response = await axios.post(route('payment.checkout', course.id), {
-        course_id: course.id,
-    });
-
-    const stripe = await stripePromise;
-    const { error } = await stripe.redirectToCheckout({
-        sessionId: response.data.id,
-    });
-
-    if (error) {
-        console.error("Stripe error:", error);
-        form.processing = false;
-    }
+    form.post(`/courses/${course.id}/pay`);
 };
+
+
 </script>
+
+
 
 <template>
     <AuthenticatedLayout>
@@ -57,8 +47,9 @@ const register = async () => {
         </div>
         <div class="mt-6">
             <PrimaryButton v-if="!isRegistered" @click="register" :class="{ 'opacity-25': form.processing }" :disabled="form.processing" class="register-button">
-                Register for this course
+                Pay for this course
             </PrimaryButton>
+
             <span v-else class="text-gray-500">You are already registered for this course</span>
         </div>
     </AuthenticatedLayout>
