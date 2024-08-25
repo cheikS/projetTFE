@@ -57,8 +57,15 @@ class MessageController extends Controller
     public function show($id)
     {
         $message = Message::with('sender')->findOrFail($id);
+    
+        // Marquer le message comme lu
+        if (Auth::id() === $message->receiver_id && !$message->is_read) {
+            $message->update(['is_read' => true]);
+        }
+    
         return inertia('Messages/MessageDetails', ['message' => $message]);
     }
+    
 
     
     public function reply(Request $request)

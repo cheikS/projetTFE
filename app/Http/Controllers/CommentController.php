@@ -12,22 +12,23 @@ class CommentController extends Controller
         $request->validate([
             'video_id' => 'required|integer|exists:videos,id',
             'content' => 'required|string|max:1000',
+            'parent_id' => 'nullable|integer|exists:comments,id',
         ]);
 
         $comment = Comment::create([
             'user_id' => auth()->id(),
             'video_id' => $request->video_id,
             'content' => $request->content,
+            'parent_id' => $request->parent_id,
         ]);
 
-        // Check if the request expects an Inertia response
         if ($request->wantsJson() || $request->inertia()) {
             return back()->with('success', 'Comment submitted successfully!');
         }
 
-        // Default to JSON response if not Inertia request
         return response()->json($comment);
     }
+
 
     public function destroy($id)
     {

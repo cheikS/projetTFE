@@ -56,7 +56,7 @@ const hasVideos = computed(() => {
                     </li>
                 </ul>
                 <p v-else-if="!isLoading" class="text-center text-gray-500">
-                    There are no videos for this course yet.
+                    Il n'y a encore aucune vidéo pour ce cours.
                 </p>
                 <p v-else class="text-center text-gray-500">
                     Loading course data...
