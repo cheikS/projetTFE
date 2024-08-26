@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch } from 'vue';
-import { usePage, router } from '@inertiajs/vue3';  // Ajoutez `router` ici
+import { usePage, router } from '@inertiajs/vue3';
 
 // Accéder aux props avec usePage
 const { props } = usePage();
@@ -13,28 +13,23 @@ const allComments = ref(props.comments ? props.comments.map(comment => ({
     replies: comment.replies || []
 })) : []);
 
-// Initialisation de la propriété comments à partir de allComments
 const comments = ref(allComments.value.slice(0, 3));
 
-// Variables pour la gestion du formulaire de commentaire
-const newComment = ref('');            // Contenu du nouveau commentaire
-const showForm = ref(false);            // Afficher ou masquer le formulaire
-const successMessage = ref('');         // Message de succès après soumission
-const errorMessage = ref('');           // Message d'erreur après soumission
-const parentCommentId = ref(null);      // ID du commentaire parent (pour les réponses)
+const newComment = ref('');
+const showForm = ref(false);
+const successMessage = ref('');
+const errorMessage = ref('');
+const parentCommentId = ref(null);
 
-// Watcher pour suivre les changements de `allComments` et mettre à jour `comments`
 watch(allComments, () => {
     comments.value = allComments.value.slice(0, 3);
 });
 
-// Fonction pour basculer l'affichage du formulaire
 const toggleForm = (commentId = null) => {
     showForm.value = !showForm.value;
     parentCommentId.value = commentId;
 };
 
-// Fonction pour soumettre un commentaire
 const submitComment = () => {
     router.post('/comments', {
         video_id: props.videoId,
@@ -74,12 +69,10 @@ const submitComment = () => {
         }
     });
 };
-
 </script>
 
 <template>
   <AuthenticatedLayout>
-    <!-- Affichage de la vidéo -->
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 py-4">
       <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
         <iframe
@@ -90,6 +83,8 @@ const submitComment = () => {
           allowfullscreen
         ></iframe>
         <p v-else class="text-center text-gray-500">Loading video...</p>
+
+        
       </div>
 
       <!-- Formulaire pour entrer un nouveau commentaire -->
@@ -109,9 +104,7 @@ const submitComment = () => {
               Submit
           </button>
         </form>
-        <!-- Affichage du message de succès -->
         <p v-if="successMessage" class="mt-2 text-green-500">{{ successMessage }}</p>
-        <!-- Affichage du message d'erreur -->
         <p v-if="errorMessage" class="mt-2 text-red-500">{{ errorMessage }}</p>
       </div>
 
@@ -141,7 +134,6 @@ const submitComment = () => {
             </ul>
           </li>
         </ul>
-        <!-- Ajoutez ici des boutons de navigation si nécessaire -->
       </div>
 
       <!-- Formulaire de réponse -->
@@ -161,11 +153,10 @@ const submitComment = () => {
               Submit
           </button>
         </form>
-        <!-- Affichage du message de succès -->
         <p v-if="successMessage" class="mt-2 text-green-500">{{ successMessage }}</p>
-        <!-- Affichage du message d'erreur -->
         <p v-if="errorMessage" class="mt-2 text-red-500">{{ errorMessage }}</p>
       </div>
     </div>
   </AuthenticatedLayout>
+  
 </template>

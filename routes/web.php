@@ -10,6 +10,8 @@ use App\Http\Controllers\VideoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\QuizController;
+
 
 
 
@@ -42,7 +44,14 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 
+
 Route::middleware('auth')->group(function () {
+    Route::get('quiz/{id}', [QuizController::class, 'show'])->name('quiz.show');
+    Route::post('quiz/{id}', [QuizController::class, 'submit'])->name('quiz.submit');
+    Route::put('/instructor/courses/{course}/videos/{video}/quiz', [QuizController::class, 'update'])->name('instructor.courses.update-quiz');
+    Route::get('/videos/{video}', [VideoController::class, 'show'])->name('videos.show');
+    Route::get('quiz/{id}', [QuizController::class, 'show'])->name('quiz.show');
+    Route::post('quiz/{id}', [QuizController::class, 'submit'])->name('quiz.submit');
     Route::get('/courses/{course}/success', [PaymentController::class, 'success'])->name('courses.success');
     Route::get('/courses/{course}/cancel', [PaymentController::class, 'cancel'])->name('courses.cancel');
     Route::post('/courses/{course}/pay', [PaymentController::class, 'pay'])->name('courses.pay');

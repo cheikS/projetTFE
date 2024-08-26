@@ -1,26 +1,21 @@
 <script setup>
 import { ref, watch, computed } from 'vue';
-import { usePage } from '@inertiajs/vue3';
+import { usePage, router } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 
 const { props } = usePage();
 const course = ref(props.course);
 const videos = ref(props.videos);
 
-console.log('Course:', course.value);
-console.log('Videos:', videos.value);
-
 const isLoading = ref(true);
 
 watch(() => props.course, (newCourse) => {
     course.value = newCourse;
-    console.log('Updated Course:', newCourse);
     checkDataLoaded();
 });
 
 watch(() => props.videos, (newVideos) => {
     videos.value = newVideos;
-    console.log('Updated Videos:', newVideos);
     checkDataLoaded();
 });
 
@@ -33,6 +28,11 @@ const checkDataLoaded = () => {
 const hasVideos = computed(() => {
     return videos.value && videos.value.length > 0;
 });
+
+// Fonction pour rediriger vers la page du quiz
+const goToQuiz = (quizId) => {
+    router.visit(route('quiz.show', quizId));
+};
 </script>
 
 <template>
@@ -52,7 +52,16 @@ const hasVideos = computed(() => {
                     <li v-for="video in videos" :key="video.id" class="mb-4 p-4 border rounded">
                         <h3 class="text-lg font-semibold">{{ video.title }}</h3>
                         <p>{{ video.description }}</p>
-                        <a :href="`/courses/${course.id}/videos/${video.id}`" class="text-blue-500 hover:underline">Watch Video</a>
+                        <div class="flex justify-between items-center">
+                            <a :href="`/courses/${course.id}/videos/${video.id}`" class="text-blue-500 hover:underline">Watch Video</a>
+                            <button
+                                v-if="video.quiz"
+                                @click="goToQuiz(video.quiz.id)"
+                                class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
+                            >
+                                Take the Quiz
+                            </button>
+                        </div>
                     </li>
                 </ul>
                 <p v-else-if="!isLoading" class="text-center text-gray-500">

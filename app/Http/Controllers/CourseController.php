@@ -214,17 +214,18 @@ public function showAddVideoForm(Course $course)
     }
 
     public function showVideos(Course $course)
-{
-    // Charger les vidéos du cours
-    $videos = $course->videos;
-
-    // Inclure les informations du cours dans la réponse
-    return Inertia::render('Courses/Videos', [
-        'course' => $course, // Ajout de l'objet cours pour inclure son titre
-        'videos' => $videos, // Collection de vidéos liées au cours
-        'successMessage' => session('successMessage') // Message de succès si disponible
-    ]);
-}
+    {
+        // Charger les vidéos du cours avec les informations sur le quiz associé
+        $videos = $course->videos()->with('quiz')->get();
+    
+        // Inclure les informations du cours dans la réponse
+        return Inertia::render('Courses/Videos', [
+            'course' => $course, // Ajout de l'objet cours pour inclure son titre
+            'videos' => $videos, // Collection de vidéos liées au cours avec leurs quizzes associés
+            'successMessage' => session('successMessage') // Message de succès si disponible
+        ]);
+    }
+    
 
 public function showVideo(Course $course, Video $video)
 {
