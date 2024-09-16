@@ -1,5 +1,5 @@
 <script setup>
-import { Head, usePage } from '@inertiajs/vue3';
+import { Head, usePage, Link } from '@inertiajs/vue3'; // Importer le composant Link d'Inertia
 
 const { props } = usePage();
 const courses = props.courses;
@@ -9,11 +9,13 @@ const courses = props.courses;
     <div>
         <Head title="Registered Courses" />
 
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Registered Courses</h2>
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">My Courses</h2>
 
         <ul>
             <li v-for="course in courses" :key="course.id" class="mb-4 p-4 border rounded">
-                <h3 class="text-lg font-semibold">{{ course.title }}</h3>
+                <Link :href="`/courses/${course.id}/videos`" class="text-blue-500 hover:underline">
+                    <h3 class="text-lg font-semibold">{{ course.title }}</h3>
+                </Link>
                 <p>{{ course.description }}</p>
                 <p><strong>Updated At:</strong> {{ formatDate(course.updated_at) }}</p>
             </li>
@@ -33,6 +35,3 @@ const formatDate = (dateString) => {
     });
 };
 </script>
-
-<style scoped>
-</style>

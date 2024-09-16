@@ -33,8 +33,8 @@ class CoursesTableSeeder extends Seeder
             'duration' => 40,
             'level' => 'Beginner',
             'language' => 'English',
-            'price' => 49.99,
-            'category' => 'Programming',
+            'price' => 0.99,
+            'category' => 'Computer Science',
             
         ]);
 
@@ -45,8 +45,8 @@ class CoursesTableSeeder extends Seeder
             'duration' => 60,
             'level' => 'Advanced',
             'language' => 'English',
-            'price' => 99.99,
-            'category' => 'Programming',
+            'price' => 0.99,
+            'category' => 'Computer Science',
         ]);
 
         Course::create([
@@ -56,8 +56,8 @@ class CoursesTableSeeder extends Seeder
             'duration' => 50,
             'level' => 'Intermediate',
             'language' => 'French',
-            'price' => 79.99,
-            'category' => 'Programming',
+            'price' => 0.99,
+            'category' => 'Computer Science',
         ]);
 
         Course::create([
@@ -67,8 +67,8 @@ class CoursesTableSeeder extends Seeder
             'duration' => 70,
             'level' => 'Intermediate',
             'language' => 'English',
-            'price' => 89.99,
-            'category' => 'Science',
+            'price' => 0.99,
+            'category' => 'Computer Science',
         ]);
 
         Course::create([
@@ -78,8 +78,8 @@ class CoursesTableSeeder extends Seeder
             'duration' => 45,
             'level' => 'Beginner',
             'language' => 'French',
-            'price' => 59.99,
-            'category' => 'Technology',
+            'price' => 0.99,
+            'category' => 'Computer Science',
         ]);
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
+use Illuminate\Validation\ValidationException; 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -27,14 +27,32 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(Request $request)
     {
-        $request->authenticate();
+        // Validate the request data
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
 
+        // Attempt to log the user in
+        if (!Auth::attempt($credentials, $request->boolean('remember'))) {
+            // If the authentication attempt fails, throw a validation exception
+            throw ValidationException::withMessages([
+                'email' => __('auth.failed'), // Use the appropriate translation for 'auth.failed'
+            ]);
+        }
+
+        // Regenerate the session to prevent session fixation attacks
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Get the user's role after successful authentication
+        $role = Auth::user()->role; // Assumes a 'role' attribute on the User model
+
+        // Redirect based on the user's role
+        return Inertia::location(route('redirect.role', ['role' => $role]));
     }
+
 
     /**
      * Destroy an authenticated session.
@@ -49,4 +67,6 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/');
     }
+
+    
 }
